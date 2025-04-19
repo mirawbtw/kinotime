@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #2e2e2e;
+            color: #f0f0f0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .movie {
+            background-color: #3e3e3e;
+            padding: 20px;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .movie img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .movie h3 {
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #29a7d7;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1f8c9c;
+        }
+    </style>
+</head>
+<body>
+    <h2>Available Movies</h2>
+    <div class="movie-list">
+        {{range .Movies}}
+        <div class="movie">
+            <img src="{{.ImageURL}}" alt="Movie Poster">
+            <h3>{{.Title}}</h3>
+            <button>Details</button>
+        </div>
+        {{end}}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const movieList = document.querySelector(".movie-list");
+    
+            try {
+                const response = await fetch("http://localhost:8080/movies");
+                const movies = await response.json();
+    
+                movies.forEach(movie => {
+                    const movieElement = document.createElement("div");
+                    movieElement.classList.add("movie");
+                    movieElement.innerHTML = `
+                        <img src="${movie.image_url}" alt="Movie Poster">
+                        <h3>${movie.title}</h3>
+                        <button onclick="viewMovie(${movie.id})">Details</button>
+                    `;
+                    movieList.appendChild(movieElement);
+                });
+            } catch (error) {
+                console.error("Error fetching movies:", error);
+            }
+        });
+    
+        function viewMovie(movieId) {
+            window.location.href = `movie.html?id=${movieId}`;
+        }
+    </script>
+    
+</body>
+</html>
